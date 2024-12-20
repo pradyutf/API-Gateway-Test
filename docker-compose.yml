@@ -1,0 +1,33 @@
+services:
+  service-a:
+    build:
+      context: ./service-a
+    depends_on:
+      - rabbitmq
+    restart: always
+    ports:
+      - "3001:3001"
+
+  service-b:
+    build:
+      context: ./service-b
+    depends_on:
+      - rabbitmq
+    restart: always
+    ports:
+      - "3002:3002"
+
+  api-gateway:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - service-a
+      - service-b
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # AMQP port
+      - "15672:15672" # Management UI
